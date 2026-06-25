@@ -193,6 +193,16 @@ function App(): JSX.Element {
   }
 
   useEffect(() => {
+    // One-time settings migration to force default volume = 0 and default text size = sm for existing upgrading users
+    const savedVersion = localStorage.getItem('wh_version')
+    if (savedVersion !== '1.0.2') {
+      localStorage.setItem('wh_volume', '0')
+      localStorage.setItem('wh_textsize', 'sm')
+      setVolume(0)
+      setTextSize('sm')
+      localStorage.setItem('wh_version', '1.0.2')
+    }
+
     window.api.onNewWhisper((newWhisper) => {
       registerNewWhisper({
         playerName: newWhisper.playerName,
