@@ -1,6 +1,6 @@
 {
     "name": "whisperhub",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
     "main": "./out/main/index.js",
     "scripts": {
@@ -42,7 +42,9 @@
             "out/**/*",
             "package.json"
         ],
+        "icon": "whisperhub.ico",
         "win": {
+            "icon": "whisperhub.ico",
             "target": [
                 {
                     "target": "nsis",

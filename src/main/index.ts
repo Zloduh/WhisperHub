@@ -17,6 +17,7 @@ function createWindow(): void {
     frame: false,
     transparent: true,
     alwaysOnTop: true,
+    icon: join(__dirname, '../../whisperhub.ico'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
