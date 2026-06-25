@@ -35,7 +35,7 @@ function App(): JSX.Element {
 
   const [volume, setVolume] = useState<number>(() => {
     const saved = localStorage.getItem('wh_volume')
-    return saved ? JSON.parse(saved) : 50
+    return saved ? JSON.parse(saved) : 0
   })
   const [opacity, setOpacity] = useState<number>(() => {
     const saved = localStorage.getItem('wh_opacity')
@@ -43,7 +43,7 @@ function App(): JSX.Element {
   })
   const [textSize, setTextSize] = useState<'sm' | 'base' | 'lg'>(() => {
     const saved = localStorage.getItem('wh_textsize')
-    return (saved as 'sm' | 'base' | 'lg') || 'base'
+    return (saved as 'sm' | 'base' | 'lg') || 'sm'
   })
   
   // Custom Macros
