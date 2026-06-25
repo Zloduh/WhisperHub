@@ -1,49 +1,54 @@
 # WhisperHub
 
-**WhisperHub** is a lightweight, standalone, always-on-top Electron overlay for **Path of Exile 2 (PoE 2)**. It aggregates in-game audience/player whispers (`@From`) into a clean, grouped list. This allows streamers, traders, and players to manage repetitive whisper requests (such as build info, trades, or group invites) efficiently without tab-targeting out of the game.
-
----
-
-## Table of Contents
-1. [Key Features](#key-features)
-2. [How It Works](#how-it-works)
-3. [Window Controls & Dragging](#window-controls--dragging)
-4. [Getting Started & Installation](#getting-started--installation)
-5. [Project Architecture](#project-architecture)
-6. [Shortcut Reference](#shortcut-reference)
-7. [Privacy & Anti-Cheat Safety](#privacy--anti-cheat-safety)
-8. [Developer Resources & References](#developer-resources--references)
+**WhisperHub** is a lightweight, standalone, always-on-top Electron overlay for **Path of Exile 1** and **Path of Exile 2**. It aggregates in-game viewer/player whispers (`@From`) into a clean, grouped list. Designed specifically for streamers, trade runners, and group leads, it helps manage viewer party invites, build link distribution, and audience questions without tab-targeting out of the game client.
 
 ---
 
 ## Key Features
 
-- **Frameless Overlay:** Runs as a transparent, borderless window that floats on top of the PoE 2 client.
-- **Smart Aggregation:** Group whispers dynamically by `PlayerName`. Shows a notification count badge, the latest received message, and automatically sorts the list so that the most recent message is at the top.
-- **Invite Macro:** Click **Invite** next to any player name to instantly copy `/invite <PlayerName>` to your clipboard. Simply press enter in-game and paste (`Ctrl + V`) to send an invite.
-- **List Management:** Individual **Dismiss** to remove a single player, and a **Clear All** button to purge the current session's queue.
-- **Zero Game Hooks:** Operates passively by reading the local game log file, ensuring 100% compliance with game rules and safety policies.
+- **Multi-Game Support:** Seamlessly switch between monitoring **Path of Exile 1** and **Path of Exile 2** log sources.
+- **Overlay Position Lock & Click-Through:** Toggle lock states (🔓 / 🔒) in the header. 
+  - **Unlocked (🔓):** Drag the header bar to reposition the overlay anywhere on your screen.
+  - **Locked (🔒):** Click-through is active. The empty dark background ignores mouse clicks, passing inputs straight to the game client so you can play without hindrance. Hovering over list cards or buttons temporarily recaptures focus so you can click them.
+- **Custom Client Support (Standalone & Epic):** Override Steam auto-discovery by browsing and selecting your GGG Standalone client or Epic Games Store `Client.txt` file manually.
+- **Grouped Whisper Queue:** Automatically groups whispers by `PlayerName`, updates the card with the latest message, increments a notification badge count, and sorts active players so that the most recent whisper rises to the top.
+- **Fuzzy Search Filters:** Instantly filter active queue cards by player name or query keywords (e.g. "invite", "build").
+- **Customizable Action Macros:** Configure three separate macro buttons next to each player (e.g. `Invite`, `Build Link`, `Wait Reply`). The commands are fully editable in the settings and automatically replace the `{name}` placeholder with the viewer's character name.
+- **Notification Audio Chimes:** Emulates a pleasant retro-metallic bell notification chime using the Web Audio API (completely client-side, zero assets needed, adjustable volume).
+- **Test Mock Ingest:** Inject random test whispers using the `+` button in the header bar to preview active layouts, font sizes, and check notification sounds without needing to manually generate whispers.
+- **Design Tokens System:** Styled according to the [DESIGN.md](file:///d:/Projekti/WhisperHub/DESIGN.md) specification, matching the dark fantasy bronze, slate, and glowing amber aesthetics of the GGG games.
+
 
 ---
 
 ## How It Works
 
-1. **Auto-Discovery:** On startup, the app checks standard Windows Steam locations and parses Steam VDF library files (`libraryfolders.vdf` and `appmanifest_2694490.acf`) to find the Path of Exile 2 installation folder and locate the `Client.txt` log.
-2. **Log Tailing:** Using a Node.js filesystem watcher, WhisperHub tails `Client.txt` passively. It detects when new lines are appended without holding file locks or consuming significant CPU resources.
-3. **Whisper Parsing:** The app matches incoming lines against PoE 2's chat format:
+1. **Log Discovery:** On startup, WhisperHub checks standard Steam roots and manifests to find installation folders. If a manual path override is set in the UI, GGG standalone or Epic directory paths are tail-monitored instead.
+2. **Log Tailing:** Using a Node.js filesystem watcher, WhisperHub tails `Client.txt` passively, matching incoming lines against PoE log formats:
    ```regex
    @From (?:<Guild> )?PlayerName: message
    ```
-4. **IPC Communication:** The main process parses the whispers and passes them to the React frontend in real-time.
+3. **IPC Channel:** Whispers and game connection statuses are communicated between the Electron main process and the React front-end bridge in real-time.
+4. **Mouse Events Forwarding:** Hover event bindings toggle Electron's `setIgnoreMouseEvents` dynamically when Click-Through is active.
 
 ---
 
-## Window Controls & Dragging
+## Window Controls & Interaction
 
-Since WhisperHub is completely borderless and frameless, it uses custom CSS regions for movement:
-- **Move Window:** You can click and drag **any empty area** of the overlay window (such as the header bar or the container background) to reposition it on your monitor.
-- **Interactive Buttons:** Buttons (Invite, Dismiss, Clear All, and Exit) are exempted from dragging so that you can click them normally.
-- **Quit Application:** Click the red cross (`✕`) button in the top-right corner to exit WhisperHub.
+- **Toggle Lock (Padlock Icon):** Click the 🔓/🔒 icon to toggle between Unlocked (movable) and Locked (click-through) modes.
+- **Move Window:** When unlocked, click and drag the header bar labeled **"DRAGGABLE"** to reposition the panel.
+- **Minimize Overlay (Collapse Icon):** Click the minimize button to collapse the interface into a small, floating circular bubble showing the total active whisper count. Click it again to expand.
+- **Customization Settings (Gear Icon):** Open the settings drawer to adjust:
+  - Background Opacity (35% to 100%).
+  - Audio Alert Volume (0% to 100%).
+  - Typography Font Sizes (Small, Base, Large).
+  - Active Game Profile (PoE 1 vs PoE 2).
+  - Custom log file paths (via native folder explorer).
+  - Customizable macros label and templates.
+- **Help Sheet:** Switch to the "Usage Guide" tab inside Settings for quick directions.
+- **Test Ingest (➕ Icon):** Click the plus sign icon in the header to immediately simulate an incoming whisper for checking layout sizing and audio volume.
+- **Quit Application (✕ Icon):** Click the red close cross in the top-right corner to exit the app.
+
 
 ---
 
@@ -51,7 +56,7 @@ Since WhisperHub is completely borderless and frameless, it uses custom CSS regi
 
 ### Prerequisites
 - **Node.js** (v18 or higher recommended)
-- **Path of Exile 2** installed via Steam on Windows (the app will auto-detect the Steam installation path).
+- **Path of Exile 1 or 2** installed on Windows.
 
 ### 1. Install Dependencies
 Navigate to the root directory of the application and run:
@@ -84,38 +89,30 @@ npm run preview
 The application is structured as a standard Electron + Vite + React + TypeScript project:
 
 *   **[`src/main/`](file:///D:/Projekti/WhisperHub/src/main)**: Contains the main process code.
-    *   **[`discovery.ts`](file:///D:/Projekti/WhisperHub/src/main/discovery.ts)**: Handles searching for Steam root directories and libraries to find the PoE 2 install path and the `Client.txt` file.
-    *   **[`whisper-watcher.ts`](file:///D:/Projekti/WhisperHub/src/main/whisper-watcher.ts)**: Watches/tails the log file in real-time, matching lines using regular expressions to emit parsed whispers.
-    *   **[`index.ts`](file:///D:/Projekti/WhisperHub/src/main/index.ts)**: Initializes the Electron windows, sets window parameters (transparency, always-on-top), handles application IPC commands (clipboard copy, quit), and hooks the whisper watcher to the renderer.
+    *   **[`discovery.ts`](file:///D:/Projekti/WhisperHub/src/main/discovery.ts)**: Steam installation auto-discovery for PoE 1 (App ID `238960`) and PoE 2 (App ID `2694490`).
+    *   **[`whisper-watcher.ts`](file:///D:/Projekti/WhisperHub/src/main/whisper-watcher.ts)**: Passive log file reader tailing logs and parsing `@From` patterns.
+    *   **[`index.ts`](file:///D:/Projekti/WhisperHub/src/main/index.ts)**: Initializes the Electron windows, hooks native file selectors, toggles mouse input ignore states, and channels IPC events.
 *   **[`src/preload/`](file:///D:/Projekti/WhisperHub/src/preload)**: Contains the context-bridge.
     *   **[`index.ts`](file:///D:/Projekti/WhisperHub/src/preload/index.ts)**: Exposes APIs to the renderer window, including clipboard operations and log watchers under `window.api`.
 *   **[`src/renderer/`](file:///D:/Projekti/WhisperHub/src/renderer)**: Contains the frontend code.
-    *   **[`src/App.tsx`](file:///D:/Projekti/WhisperHub/src/renderer/src/App.tsx)**: The React component managing state, list aggregation, sorting, and UI layout.
-    *   **[`src/index.css`](file:///D:/Projekti/WhisperHub/src/renderer/src/index.css)**: Custom Tailwind CSS classes, styling the custom webkit scrollbar and specifying drag/no-drag regions.
-*   **[`package.json`](file:///D:/Projekti/WhisperHub/package.json)**: Scripts, configuration, and dependencies.
+    *   **[`src/App.tsx`](file:///D:/Projekti/WhisperHub/src/renderer/src/App.tsx)**: Main React component managing queue states, settings, Web Audio bell synthesis, custom macros, and mouse forwards.
+    *   **[`src/index.css`](file:///D:/Projekti/WhisperHub/src/renderer/src/index.css)**: Custom Tailwind CSS styles, layout variables, animations, and custom scrollbar styles.
+    *   **[`index.html`](file:///D:/Projekti/WhisperHub/src/renderer/index.html)**: Main HTML skeleton linking Google Fonts Outfit and Cinzel.
+*   **[`DESIGN.md`](file:///D:/Projekti/WhisperHub/DESIGN.md)**: Google Stitch token specification mapping colors, layouts, and styles.
 
 ---
 
-## Shortcut Reference
+## Shortcuts Reference
 
-- **Development DevTools:** Press `F12` while the app is in focus (only during development mode) to toggle the Chrome Developer Tools window for debugging.
+- **Escape Key:** Press `Esc` while the app has focus to close the settings drawer.
+- **F12 Key:** Toggle Chrome Developer Tools window during development.
 - **Reload Window:** Press `Ctrl + R` (in development mode) to reload the application window.
-- **Pasting Invites:** After clicking **Invite**, use `Ctrl + V` inside the PoE 2 chat bar to paste the generated invite command.
+- **Pasting Commands:** Clicking any macro button automatically copies the command. Press Enter inside the game client, paste (`Ctrl + V`), and press Enter again!
 
 ---
 
-## Privacy & Anti-Cheat Safety
+## Privacy & anti-Cheat Safety
 
-- **100% Client-Side:** WhisperHub operates entirely on your local machine. It does not contact any external APIs, analytics servers, or databases.
-- **Log-Based Only:** It reads the game log file (`Client.txt`) created by PoE 2 itself. It **does not** hook into the game process, inject DLLs, or modify memory. This keeps it completely safe from anti-cheat bans.
-- **Safe Copy/Paste:** The macro relies on the Windows clipboard rather than automating keystrokes directly into the game client, avoiding any rule violations regarding automated multi-action macros.
-
----
-
-## Developer Resources & References
-
-If you need to research or modify game log ingestion or discovery, the following specifications and scripts are available in the workspace:
-- **[`PLAN.md`](file:///D:/Projekti/WhisperHub/PLAN.md)**: The original project roadmap, detailing design requirements, architecture, and overlay interactions.
-- **[`log-requirements-reference.md`](file:///D:/Projekti/WhisperHub/log-requirements-reference.md)**: Detailed specifications on log ingestion boundaries, validation workflows, and privacy guidelines.
-- **[`discover-game-reference.ps1`](file:///D:/Projekti/WhisperHub/discover-game-reference.ps1)**: A reference PowerShell script containing initial path discovery algorithms using Steam's library format.
-- **[`classify-poe2-reference.ps1`](file:///D:/Projekti/WhisperHub/classify-poe2-reference.ps1)**: A helper script containing common regex match classifications for rendering devices, network events, and client startup logs.
+- **100% Local:** WhisperHub does not communicate with external servers, cloud providers, or APIs. It is fully offline.
+- **Log-Based Only:** It reads the game log file (`Client.txt`) created by PoE itself. It **does not** hook into the game process, inject DLLs, or modify memory. This keeps it completely safe from anti-cheat bans.
+- **Safe Copy/Paste:** The macro relies on the Windows clipboard rather than automating keystrokes directly into the game client, avoiding any anti-cheat rule violations.
