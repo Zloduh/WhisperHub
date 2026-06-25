@@ -7,7 +7,8 @@
         "preview": "electron-vite preview",
         "build": "electron-vite build",
         "dev": "electron-vite dev",
-        "start": "electron-vite preview"
+        "start": "electron-vite preview",
+        "package": "npm run build && electron-builder --win"
     },
     "keywords": [],
     "author": "",
@@ -24,10 +25,50 @@
         "@vitejs/plugin-react": "^4.7.0",
         "autoprefixer": "^10.5.0",
         "electron": "^42.4.1",
+        "electron-builder": "^26.15.3",
         "electron-vite": "^5.0.0",
         "postcss": "^8.5.15",
         "tailwindcss": "^4.3.1",
         "typescript": "^6.0.3",
         "vite": "^6.4.3"
+    },
+    "build": {
+        "appId": "com.zloduh.whisperhub",
+        "productName": "WhisperHub",
+        "directories": {
+            "output": "dist"
+        },
+        "files": [
+            "out/**/*",
+            "package.json"
+        ],
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64"
+                    ]
+                },
+                {
+                    "target": "portable",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ]
+        },
+        "nsis": {
+            "oneClick": true,
+            "allowToChangeInstallationDirectory": false,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "WhisperHub"
+        },
+        "publish": [
+            {
+                "provider": "github"
+            }
+        ]
     }
 }

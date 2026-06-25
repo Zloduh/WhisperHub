@@ -82,6 +82,28 @@ To run the built version of the application:
 npm run preview
 ```
 
+### 5. Local Packaging
+To compile and package the app into standalone Windows executables (NSIS Setup installer and Portable executable) locally:
+```bash
+npm run package
+```
+This generates the installers under the `/dist` directory.
+
+---
+
+## Releasing New Versions
+
+WhisperHub features automated release builds using GitHub Actions:
+1. **Tag your commit** locally when ready for a new version:
+   ```bash
+   git tag v1.0.0
+   ```
+2. **Push the tag** to your GitHub repository:
+   ```bash
+   git push origin v1.0.0
+   ```
+3. **Automated Publish:** GitHub Actions will detect the tag, spin up a Windows build runner, package the project, and automatically attach the compiled `.exe` files to a new **Draft Release** on your repository. Review the draft and hit publish to release!
+
 ---
 
 ## Project Architecture
