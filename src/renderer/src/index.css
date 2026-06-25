@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-poe-bg: #0a0a0c;
+    --color-poe-panel: #141519;
+    --color-poe-accent: #e07a1b;
+    --color-poe-accent-glow: rgba(224, 122, 27, 0.4);
+    --color-poe-accent-hover: #ff9c3a;
+    --color-poe-border-bronze: #84633d;
+    --color-poe-border-muted: #2d2822;
+    --color-poe-text-active: #f3e6d8;
+    --color-poe-text-muted: #7d7872;
+    --color-poe-card: #161310;
+  }
+  
+  body {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    color: #f3e6d8; /* var(--color-poe-text-active) */
+    background-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
+  }
+}
+
+.drag {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Custom scrollbars matching the theme */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #84633d; /* var(--color-poe-border-bronze) */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e07a1b; /* var(--color-poe-accent) */
+}
+
+/* Beautiful fading animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(224, 122, 27, 0.2);
+    border-color: rgba(132, 99, 61, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(224, 122, 27, 0.6);
+    border-color: rgba(224, 122, 27, 0.8);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2s infinite ease-in-out;
+}

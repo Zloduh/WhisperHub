@@ -1,0 +1,33 @@
+{
+    "name": "whisperhub",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./out/main/index.js",
+    "scripts": {
+        "preview": "electron-vite preview",
+        "build": "electron-vite build",
+        "dev": "electron-vite dev",
+        "start": "electron-vite preview"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "dependencies": {
+        "@electron-toolkit/preload": "^3.0.2",
+        "@electron-toolkit/utils": "^4.0.0",
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4.3.1",
+        "@vitejs/plugin-react": "^4.7.0",
+        "autoprefixer": "^10.5.0",
+        "electron": "^42.4.1",
+        "electron-vite": "^5.0.0",
+        "postcss": "^8.5.15",
+        "tailwindcss": "^4.3.1",
+        "typescript": "^6.0.3",
+        "vite": "^6.4.3"
+    }
+}
